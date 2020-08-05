@@ -18,4 +18,4 @@ This file gives a quick set of instructions for setting up the Git repository.
 | ----------------------- | ------------------- | --------------------------------- |
 | Add files/stage changes | `ctrl + g a`        | `git add .`                       |
 | Commit changes          | `ctrl + g c`        | `git commit -am '<message here>'` |
-| Push changes to remote  | `ctrl + g p`        | `git push -u master`              |
+| Push changes to remote  | `ctrl + g p`        | `git push -u origin master`       |

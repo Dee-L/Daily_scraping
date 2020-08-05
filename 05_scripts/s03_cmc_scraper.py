@@ -3,10 +3,6 @@
 # Date: 2020-Jul-31
 # Version: 1.0
 
-# Requested revision: Drop _ prefixes from this file and _04_CMC_credentials.
-# This will change how they are sourced since Python does not accept
-# object names (including packages) to start with digits.
-
 # Revisions:
 # Author:
 # Date: YYYY-MMM-DD

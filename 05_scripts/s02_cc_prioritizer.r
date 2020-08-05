@@ -8,7 +8,6 @@
 # Date: YYYY-MMM-DD
 # Revised Version:
 
-
 # 01 Create df for looking up cc values ####
 cmc_ccs <-
     openxlsx::read.xlsx(cc_ticker_lookup_table, sheet = "CoinMarketCap")
@@ -34,7 +33,7 @@ rm(r, ConnectionError, R, Request, Session, Timeout, TooManyRedirects)
 # Remove cache
 unlink(paste0(scripts_folder, "__pycache__"), recursive = TRUE)
 
-# 03 If scraping fails ####
+# 02 If scraping fails ####
 
 # If the python script doesn't work, use the former ranks for the ccs.
 
@@ -87,7 +86,7 @@ openxlsx::addWorksheet(my_wb, "CCs_ranked")
 
 openxlsx::writeData(my_wb, "CCs_ranked", ccs_ranked)
 
-# 04 Subsetting CCs based on market cap and if already hold ####
+# 03 Subsetting CCs based on market cap and if already hold ####
 
 number_of_tickers <-
     openxlsx::read.xlsx(

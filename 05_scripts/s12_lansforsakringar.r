@@ -10,7 +10,7 @@
 
 # 01 Preparing to scrape ####
 
-lansforsakringar_df <-
+lansforsakringar <-
     data.frame(
         fonds = c(
             "BlackRock Sustainable Energy",
@@ -39,25 +39,9 @@ lansforsakringar_sites <-
 
 # 02 Scraping ####
 
-lansforsakringar_df %<>%
+lansforsakringar %<>%
     scrape_multiple(lansforsakringar_sites, scrape_lansforsakringar_dot_se)
 
-# 03 Saving ####
+# 03 Saving and append for QC ####
 
-openxlsx::addWorksheet(my_wb, "Lansforsakringar")
-
-openxlsx::writeData(my_wb, "Lansforsakringar", lansforsakringar_df)
-
-# 04 Appending to df for final QC ####
-
-lansforsakringar_df[["Source"]] <- "Länsförsäkringar"
-
-if (exists("all_assets_df")) {
-    all_assets_df %<>%
-        rbind(
-            .,
-            lansforsakringar_df
-        )
-} else {
-    all_assets_df <- lansforsakringar_df
-}
+save_and_append_to_test_df(lansforsakringar)

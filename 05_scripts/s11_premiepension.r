@@ -10,7 +10,7 @@
 
 # 01 Preparing to scrape ####
 
-premiepension_df <-
+premiepension <-
     data.frame(
         fonds = c(
             "Skandia Time Global",
@@ -38,26 +38,10 @@ premiepension_sites_to_scrape <-
 
 # 02 Scraping ####
 
-premiepension_df %<>%
+premiepension %<>%
     scrape_multiple(premiepension_sites_to_scrape,
     scrape_pnsnsmyndigheten_dot_se)
 
-# 03 Saving ####
+# 03 Saving and append for QC ####
 
-openxlsx::addWorksheet(my_wb, "Premiepension")
-
-openxlsx::writeData(my_wb, "Premiepension", premiepension_df)
-
-# 04 Appending to df for final QC ####
-
-premiepension_df[["Source"]] <- "Premiepension"
-
-if (exists("all_assets_df")) {
-    all_assets_df %<>%
-        rbind(
-            .,
-            premiepension_df
-        )
-} else {
-    all_assets_df <- premiepension_df
-}
+save_and_append_to_test_df(premiepension)

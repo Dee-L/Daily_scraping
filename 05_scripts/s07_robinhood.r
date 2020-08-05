@@ -1,4 +1,4 @@
-# Purpose: Scraping data for Robinhood
+# Purpose: Scraping data for robinhood
 # Author: David Gray Lassiter, PhD
 # Date: 2020-Aug-01
 # Version: 1.0
@@ -11,7 +11,7 @@
 
 # 01 Preparing to scrape ####
 
-robinhood_df <- data.frame(
+robinhood <- data.frame(
     fonds = c(
         "VNQI Stock",
         "IXJ Stock",
@@ -40,25 +40,9 @@ robinhood_sites_to_scrape <- c(
 
 # 02 Scraping ####
 
-robinhood_df %<>%
+robinhood %<>%
     scrape_multiple(robinhood_sites_to_scrape, scrape_morningstar_dot_com)
 
-# 03 Saving ####
+# 03 Saving and append for QC ####
 
-openxlsx::addWorksheet(my_wb, "Robinhood")
-
-openxlsx::writeData(my_wb, "Robinhood", robinhood_df)
-
-# 04 Appending to df for final QC ####
-
-robinhood_df[["Source"]] <- "robinhood_df"
-
-if (exists("all_assets_df")) {
-    all_assets_df %<>%
-        rbind(
-            .,
-            hisk_df
-        )
-} else {
-    all_assets_df <<- robinhood_df
-}
+save_and_append_to_test_df(robinhood)

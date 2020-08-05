@@ -10,7 +10,7 @@
 
 # 01 Preparing to scrape ####
 
-spppension_df <-
+spppension <-
     data.frame(
         fonds = c(
             "SEB Likviditetsfond SEK",
@@ -36,25 +36,9 @@ spppension_sites_to_scrape <-
 
 # 02 Scraping ####
 
-spppension_df %<>%
+spppension %<>%
     scrape_multiple(spppension_sites_to_scrape, scrape_morningstar_dot_se)
 
-# 03 Saving ####
+# 03 Saving and append for QC ####
 
-openxlsx::addWorksheet(my_wb, "SPP_pensionfund")
-
-openxlsx::writeData(my_wb, "SPP_pensionfund", spppension_df)
-
-# 04 Appending to df for final QC ####
-
-spppension_df[["Source"]] <- "SPP"
-
-if (exists("all_assets_df")) {
-    all_assets_df %<>%
-        rbind(
-            .,
-            spppension_df
-        )
-} else {
-    all_assets_df <- spppension_df
-}
+save_and_append_to_test_df(spppension)

@@ -21,7 +21,7 @@ kraken_n_pairs <-
         cols = 2
     )[1, 1]
 
-start_row_for_kraken_pairs <-
+start_row_for_kraken <-
     openxlsx::read.xlsx(
         xlsxFile = my_budget_xlsm,
         sheet = "Kraken",
@@ -29,32 +29,32 @@ start_row_for_kraken_pairs <-
         cols = 3
     )[1, 1]
 
-end_row_for_kraken_pairs <-
-    start_row_for_kraken_pairs + kraken_n_pairs
+end_row_for_kraken <-
+    start_row_for_kraken + kraken_n_pairs
 
-kraken_pairs <- # create df for my kraken_pairs
+kraken <- # create df for my kraken
     data.frame(
         SELLING_1_of =
             openxlsx::read.xlsx(
                 xlsxFile = my_budget_xlsm,
                 sheet = "Kraken",
-                rows = start_row_for_kraken_pairs:end_row_for_kraken_pairs,
+                rows = start_row_for_kraken:end_row_for_kraken,
                 cols = 2
             ),
         BUYS_x_of =
             openxlsx::read.xlsx(
                 xlsxFile = my_budget_xlsm,
                 sheet = "Kraken",
-                rows = start_row_for_kraken_pairs:end_row_for_kraken_pairs,
+                rows = start_row_for_kraken:end_row_for_kraken,
                 cols = 3
             ),
         BID = NA,
         ASK = NA
     )
 
-kraken_pairs$id <- seq_len(nrow(kraken_pairs)) # creates sorting variable
+kraken$id <- seq_len(nrow(kraken)) # creates sorting variable
 
-kraken_pairs %<>%
+kraken %<>%
     # adds tags for cc2
     merge(kraken_ccs, by.x = "SELLING_1_of", by.y = "four_letter_ticker") %>%
     # renames it
@@ -78,45 +78,45 @@ kraken_pairs %<>%
     .[, colnames(.) %not_in% "id"]
 
 # The currency you want to sell goes into the address first
-kraken_pairs[["URL"]] <-
+kraken[["URL"]] <-
     paste0(
         "https://api.kraken.com/0/public/Ticker?pair=",
-        kraken_pairs$Kraken_URL_tag_for_selling,
-        kraken_pairs$Kraken_URL_tag_for_buying)
+        kraken$Kraken_URL_tag_for_selling,
+        kraken$Kraken_URL_tag_for_buying)
 
 kraken_discontinued_tickers <-
     kraken_ccs$four_letter_ticker[kraken_ccs$Kraken_discontinued == TRUE]
 
-for (i in seq_len(nrow(kraken_pairs))) {
+for (i in seq_len(nrow(kraken))) {
 
-    if ((kraken_pairs$SELLING_1_of[i] %in%
+    if ((kraken$SELLING_1_of[i] %in%
         currencies_to_get_rates_for &
-        kraken_pairs$SELLING_1_of[i] %not_in%
+        kraken$SELLING_1_of[i] %not_in%
             kraken_discontinued_tickers &
-        kraken_pairs$BUYS_x_of[i] %in%
+        kraken$BUYS_x_of[i] %in%
             currencies_to_get_rates_for &
-        kraken_pairs$BUYS_x_of[i] %not_in%
+        kraken$BUYS_x_of[i] %not_in%
             kraken_discontinued_tickers
     ) == FALSE) {
         # doesn't look up data if currencies are of little consequence for me
-        kraken_pairs$BID[i] <- NA
-        kraken_pairs$ASK[i] <- NA
+        kraken$BID[i] <- NA
+        kraken$ASK[i] <- NA
     }
     else {
-        cat(paste0("Kraken ", i, " of ", nrow(kraken_pairs), " pairs.\n\n"))
+        cat(paste0("Kraken ", i, " of ", nrow(kraken), " pairs.\n\n"))
         try_wait_retry({
             ithjson <- # read JSON file
-                kraken_pairs$URL[i] %>% # creates url to search
+                kraken$URL[i] %>% # creates url to search
                 jsonlite::fromJSON(.) # parses the JSON
 
-            kraken_pairs$BID[i] <- # extracts the BID price
+            kraken$BID[i] <- # extracts the BID price
                 ithjson$result %>%
                 .[[1]] %>%
                 .$b %>%
                 .[1] %>%
                 as.numeric()
 
-            kraken_pairs$ASK[i] <- # extracts the ASK price
+            kraken$ASK[i] <- # extracts the ASK price
                 ithjson$result %>%
                 .[[1]] %>%
                 .$a %>%
@@ -126,19 +126,19 @@ for (i in seq_len(nrow(kraken_pairs))) {
     }
 } # closes loop
 
-openxlsx::addWorksheet(my_wb, "Kraken_pairs")
+openxlsx::addWorksheet(my_wb, "kraken")
 
-openxlsx::writeData(my_wb, "Kraken_pairs", kraken_pairs)
+openxlsx::writeData(my_wb, "kraken", kraken)
 
 # 02 Setting up intra-exchange arbitrage paths ####
 
 kraken_arb_paths <-
     intra_exc_arb_paths_2_interm(
         list_of_currencies_in_exchange = kraken_ccs$four_letter_ticker,
-        currencies_on_selling_side = kraken_pairs$SELLING_1_of,
-        currencies_on_buying_side = kraken_pairs$BUYS_x_of
+        currencies_on_selling_side = kraken$SELLING_1_of,
+        currencies_on_buying_side = kraken$BUYS_x_of
     )
 
-openxlsx::addWorksheet(my_wb, "Kraken_arb_paths")
+openxlsx::addWorksheet(my_wb, "kraken_arb_paths")
 
-openxlsx::writeData(my_wb, "Kraken_arb_paths", kraken_arb_paths)
+openxlsx::writeData(my_wb, "kraken_arb_paths", kraken_arb_paths)

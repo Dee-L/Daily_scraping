@@ -3,10 +3,14 @@
 # Date: 2020-Aug-01
 # Version: 1.0
 
-# Revisions:
-# Author:
-# Date: YYYY-MMM-DD
-# Revised Version:
+# Revisions: Comments and inelegant work-around for sourcing "reticulate"
+# Author: David Gray Lassiter, PhD
+# Date: 2020-Aug-09
+# Revised Version: 1.1
+
+# Ideas for revision: Report to reticulate package maintainers problem about
+# inability to source functions with "::" syntax and follow any fixes they
+# may provide.
 
 # 01 Create df for looking up cc values ####
 cmc_ccs <-
@@ -22,6 +26,10 @@ cmc_ccs <-
 # machine.
 
 # Source python to do the job
+# Although it is usually preferable to call library functions with the "::"
+# syntax, doing so with the "reticulate" package often leads to an error
+# that "there is no package named 'reticulate'".
+library("reticulate")
 reticulate::source_python("05_scripts/s03_cmc_scraper.py")
 
 # Retrieve the output from the python job

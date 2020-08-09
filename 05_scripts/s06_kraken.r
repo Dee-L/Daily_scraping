@@ -1,4 +1,4 @@
-# Purpose: Scraping data from Kraken
+# Purpose: Scraping data from kraken
 # Author: David Gray Lassiter, PhD
 # Date: 2020-Aug-01
 # Version: 1.0
@@ -11,12 +11,12 @@
 
 # 01 Preparing to scrape ####
 
-kraken_ccs <- openxlsx::read.xlsx(cc_ticker_lookup_table, sheet = "Kraken")
+kraken_ccs <- openxlsx::read.xlsx(cc_ticker_lookup_table, sheet = "kraken")
 
 kraken_n_pairs <-
     openxlsx::read.xlsx(
         xlsxFile = my_budget_xlsm,
-        sheet = "Kraken",
+        sheet = "kraken",
         rows = 5:6,
         cols = 2
     )[1, 1]
@@ -24,7 +24,7 @@ kraken_n_pairs <-
 start_row_for_kraken <-
     openxlsx::read.xlsx(
         xlsxFile = my_budget_xlsm,
-        sheet = "Kraken",
+        sheet = "kraken",
         rows = 5:6,
         cols = 3
     )[1, 1]
@@ -37,14 +37,14 @@ kraken <- # create df for my kraken
         SELLING_1_of =
             openxlsx::read.xlsx(
                 xlsxFile = my_budget_xlsm,
-                sheet = "Kraken",
+                sheet = "kraken",
                 rows = start_row_for_kraken:end_row_for_kraken,
                 cols = 2
             ),
         BUYS_x_of =
             openxlsx::read.xlsx(
                 xlsxFile = my_budget_xlsm,
-                sheet = "Kraken",
+                sheet = "kraken",
                 rows = start_row_for_kraken:end_row_for_kraken,
                 cols = 3
             ),
@@ -58,11 +58,11 @@ kraken %<>%
     # adds tags for cc2
     merge(kraken_ccs, by.x = "SELLING_1_of", by.y = "four_letter_ticker") %>%
     # renames it
-    dplyr::rename(Kraken_URL_tag_for_selling = Kraken_URL_tag) %>%
+    dplyr::rename(kraken_URL_tag_for_selling = kraken_URL_tag) %>%
     # adds tags for cc1
     merge(kraken_ccs, by.x = "BUYS_x_of", by.y = "four_letter_ticker") %>%
     # renames it
-    dplyr::rename(Kraken_URL_tag_for_buying = Kraken_URL_tag) %>%
+    dplyr::rename(kraken_URL_tag_for_buying = kraken_URL_tag) %>%
     # reorders columns
     .[, c(
         "id",
@@ -70,8 +70,8 @@ kraken %<>%
         "BUYS_x_of",
         "BID",
         "ASK",
-        "Kraken_URL_tag_for_selling",
-        "Kraken_URL_tag_for_buying")] %>%
+        "kraken_URL_tag_for_selling",
+        "kraken_URL_tag_for_buying")] %>%
     # orders by id column
     .[order(.$id), ] %>%
     # drops id column
@@ -81,11 +81,11 @@ kraken %<>%
 kraken[["URL"]] <-
     paste0(
         "https://api.kraken.com/0/public/Ticker?pair=",
-        kraken$Kraken_URL_tag_for_selling,
-        kraken$Kraken_URL_tag_for_buying)
+        kraken$kraken_URL_tag_for_selling,
+        kraken$kraken_URL_tag_for_buying)
 
 kraken_discontinued_tickers <-
-    kraken_ccs$four_letter_ticker[kraken_ccs$Kraken_discontinued == TRUE]
+    kraken_ccs$four_letter_ticker[kraken_ccs$kraken_discontinued == TRUE]
 
 for (i in seq_len(nrow(kraken))) {
 
@@ -103,7 +103,7 @@ for (i in seq_len(nrow(kraken))) {
         kraken$ASK[i] <- NA
     }
     else {
-        cat(paste0("Kraken ", i, " of ", nrow(kraken), " pairs.\n\n"))
+        cat(paste0("kraken ", i, " of ", nrow(kraken), " pairs.\n\n"))
         try_wait_retry({
             ithjson <- # read JSON file
                 kraken$URL[i] %>% # creates url to search

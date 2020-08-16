@@ -12,7 +12,6 @@
 pkgs <-
     c(
         "openxlsx",
-        "magrittr",
         "dplyr",
         "jsonlite"
     )
@@ -64,15 +63,15 @@ kraken <- # create df for my kraken
 
 kraken$id <- seq_len(nrow(kraken)) # creates sorting variable
 
-kraken magrittr::`%<>%`
+kraken %<>%
     # adds tags for cc2
-    merge(kraken_ccs, by.x = "SELLING_1_of", by.y = "four_letter_ticker") magrittr::`%>%`
+    merge(kraken_ccs, by.x = "SELLING_1_of", by.y = "four_letter_ticker") %>%
     # renames it
-    dplyr::rename(kraken_URL_tag_for_selling = kraken_URL_tag) magrittr::`%>%`
+    dplyr::rename(kraken_URL_tag_for_selling = kraken_URL_tag) %>%
     # adds tags for cc1
-    merge(kraken_ccs, by.x = "BUYS_x_of", by.y = "four_letter_ticker") magrittr::`%>%`
+    merge(kraken_ccs, by.x = "BUYS_x_of", by.y = "four_letter_ticker") %>%
     # renames it
-    dplyr::rename(kraken_URL_tag_for_buying = kraken_URL_tag) magrittr::`%>%`
+    dplyr::rename(kraken_URL_tag_for_buying = kraken_URL_tag) %>%
     # reorders columns
     .[, c(
         "id",
@@ -81,9 +80,9 @@ kraken magrittr::`%<>%`
         "BID",
         "ASK",
         "kraken_URL_tag_for_selling",
-        "kraken_URL_tag_for_buying")] magrittr::`%>%`
+        "kraken_URL_tag_for_buying")] %>%
     # orders by id column
-    .[order(.$id), ] magrittr::`%>%`
+    .[order(.$id), ] %>%
     # drops id column
     .[, colnames(.) %not_in% "id"]
 
@@ -116,21 +115,21 @@ for (i in seq_len(nrow(kraken))) {
         cat(paste0("kraken ", i, " of ", nrow(kraken), " pairs.\n\n"))
         try_wait_retry({
             ithjson <- # read JSON file
-                kraken$URL[i] magrittr::`%>%` # creates url to search
+                kraken$URL[i] %>% # creates url to search
                 jsonlite::fromJSON(.) # parses the JSON
 
             kraken$BID[i] <- # extracts the BID price
-                ithjson$result magrittr::`%>%`
-                .[[1]] magrittr::`%>%`
-                .$b magrittr::`%>%`
-                .[1] magrittr::`%>%`
+                ithjson$result %>%
+                .[[1]] %>%
+                .$b %>%
+                .[1] %>%
                 as.numeric()
 
             kraken$ASK[i] <- # extracts the ASK price
-                ithjson$result magrittr::`%>%`
-                .[[1]] magrittr::`%>%`
-                .$a magrittr::`%>%`
-                .[1] magrittr::`%>%`
+                ithjson$result %>%
+                .[[1]] %>%
+                .$a %>%
+                .[1] %>%
                 as.numeric()
         })
     }

@@ -11,7 +11,7 @@
 # 01 Ensure all pkgs in this scriptare installed ####
 pkgs <-
     c(
-        "magrittr"
+        ""
     )
 
 install_my_pkgs(pkgs)
@@ -41,7 +41,7 @@ hisk_sites_to_scrape <-
 
 # 03 Scraping ####
 
-hisk magrittr::`%<>%`
+hisk %<>%
     scrape_multiple(hisk_sites_to_scrape, scrape_morningstar_dot_se)
 
 # 04 Saving and append for QC ####

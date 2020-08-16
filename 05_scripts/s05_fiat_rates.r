@@ -14,8 +14,7 @@ pkgs <-
         "quantmod",
         "xml2",
         "rvest",
-        "openxlsx",
-        "magrittr"
+        "openxlsx"
     )
 
 install_my_pkgs(pkgs)
@@ -37,7 +36,7 @@ fiat_pairs_to_search <- names(fiat_pairs)
 # Initiates loop to cycle for each pair
 for (i in seq_along(fiat_pairs_to_search)) {
     # Gets rate
-    quantmod::getQuote(paste0(fiat_pairs_to_search[i], "=X"))$Last magrittr::`%>%`
+    quantmod::getQuote(paste0(fiat_pairs_to_search[i], "=X"))$Last %>%
         # Stores it in a dataframe
         rbind.data.frame() ->
         # Saves it
@@ -48,15 +47,15 @@ for (i in seq_along(fiat_pairs_to_search)) {
 
 fiat_pairs[["BTCUSD"]] <-
     # Specify website
-    "https://www.coingecko.com/en/price_charts/bitcoin/usd" magrittr::`%>%`
+    "https://www.coingecko.com/en/price_charts/bitcoin/usd" %>%
     # Read it
-    xml2::read_html(.) magrittr::`%>%`
+    xml2::read_html(.) %>%
     # Extract required info
-    rvest::html_nodes(".text-3xl .no-wrap") magrittr::`%>%`
+    rvest::html_nodes(".text-3xl .no-wrap") %>%
     # String manipulations
-    rvest::html_text(.) magrittr::`%>%`
-    gsub(",", "", .) magrittr::`%>%`
-    gsub("[][$]", "", .) magrittr::`%>%`
+    rvest::html_text(.) %>%
+    gsub(",", "", .) %>%
+    gsub("[][$]", "", .) %>%
     # Convert to number
     as.numeric()
 

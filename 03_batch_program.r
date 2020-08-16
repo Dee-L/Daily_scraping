@@ -3,21 +3,21 @@
 # Date: 2020-Jul-31
 # Version: 1.0
 
-# Revisions: Getting project to install necessary packages if not done yet.
+# Revisions: Revert to piping syntax
 # Author: David Gray Lassiter, PhD
 # Date: 2020-Aug-16
-# Revised Version: 1.3
+# Revised Version: 1.4
 
-# Suggested revisions:
+# Suggested revisions: Revert to using %>% by sourcing magrittr instead of 
+# using :: syntax
 
 # 01 Source all my functions ####
 source("04_my_fxns_this_project.r")
 
-# 02 Ensure all pkgs in this scriptare installed ####
+# 02 Ensure all pkgs in this scripts are installed ####
 pkgs <-
     c(
-        "openxlsx",
-        "magrittr")
+        "openxlsx")
 
 install_my_pkgs(pkgs)
 
@@ -55,7 +55,7 @@ source_script_from_folder("s12_lansforsakringar.r")
 openxlsx::saveWorkbook(my_wb, my_xlsx, overwrite = T)
 
 # 14 Final QC test to see if all data scraped ####
-all_assets_df magrittr::`%<>%` .[, c("Source", "fonds", "price")]
+all_assets_df %<>% .[, c("Source", "fonds", "price")]
 
 if (all_assets_df[["price"]] %>% is.na %>% any) {
     print("OBS! Not all data scraped! Observe:")

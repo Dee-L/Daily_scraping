@@ -11,7 +11,7 @@
 # 01 Ensure all pkgs in this scriptare installed ####
 pkgs <-
     c(
-        "magrittr"
+        ""
     )
 
 install_my_pkgs(pkgs)
@@ -46,7 +46,7 @@ premiepension_sites_to_scrape <-
 
 # 03 Scraping ####
 
-premiepension magrittr::`%<>%`
+premiepension %<>%
     scrape_multiple(premiepension_sites_to_scrape,
     scrape_pnsnsmyndigheten_dot_se)
 

@@ -14,8 +14,7 @@
 pkgs <-
     c(
         "openxlsx",
-        "reticulate",
-        "magrittr")
+        "reticulate")
 
 install_my_pkgs(pkgs)
 
@@ -51,12 +50,12 @@ unlink(paste0(scripts_folder, "__pycache__"), recursive = TRUE)
 tryCatch({
         ccs_ranked <<-
             # match the scraped data
-            cmc_data[["name"]] magrittr::`%>%`
+            cmc_data[["name"]] %>%
             match(
                 x = .,
-                cmc_ccs$CoinMarketCap_Name_For_Python_Matching) magrittr::`%>%`
+                cmc_ccs$CoinMarketCap_Name_For_Python_Matching) %>%
             # Extracts my tickers
-            cmc_ccs$CoinMarketCap_Ticker[.] magrittr::`%>%`
+            cmc_ccs$CoinMarketCap_Ticker[.] %>%
             # Converts to Tickers
             {
                 iterator <- length(.)
@@ -64,20 +63,20 @@ tryCatch({
                     MC_rank = seq_len(iterator),
                     CoinMarketCap_Ticker = .,
                     row.names = NULL)
-            } magrittr::`%>%`
+            } %>%
             # drop ccs I don't collect
-            .[!(is.na(.$CoinMarketCap_Ticker)), ] magrittr::`%>%`
+            .[!(is.na(.$CoinMarketCap_Ticker)), ] %>%
             # bring in four_letter_ticker
-            merge(., y = cmc_ccs) magrittr::`%>%`
+            merge(., y = cmc_ccs) %>%
             # sorts df
-            .[order(.$MC_rank), ] magrittr::`%>%`
+            .[order(.$MC_rank), ] %>%
             # add CC_priority_column
             {
                 iterator <- nrow(.)
                 data.frame(.,
                     CC_priority = seq_len(iterator),
                     row.names = NULL)
-            } magrittr::`%>%`
+            } %>%
             # keep only necessary columns
             .[, c(
                 "CC_priority",
@@ -150,7 +149,7 @@ ccs_under_cutoff <- # make list of ccs which have high enough market cap
     ccs_ranked$four_letter_ticker[
         ccs_ranked$MC_rank <
             market_cap_rank_cutoff
-    ] magrittr::`%>%` as.character()
+    ] %>% as.character()
 
 currencies_to_get_rates_for <-
-    c(currencies_held, ccs_under_cutoff) magrittr::`%>%` unique()
+    c(currencies_held, ccs_under_cutoff) %>% unique()

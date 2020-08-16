@@ -11,7 +11,7 @@
 # 01 Ensure all pkgs in this scriptare installed ####
 pkgs <-
     c(
-        "magrittr"
+        ""
     )
 
 install_my_pkgs(pkgs)
@@ -47,7 +47,7 @@ lansforsakringar_sites <-
 
 # 03 Scraping ####
 
-lansforsakringar magrittr::`%<>%`
+lansforsakringar %<>%
     scrape_multiple(lansforsakringar_sites, scrape_lansforsakringar_dot_se)
 
 # 04 Saving and append for QC ####

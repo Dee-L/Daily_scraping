@@ -11,7 +11,7 @@
 # 01 Ensure all pkgs in this scriptare installed ####
 pkgs <-
     c(
-        "magrittr"
+        ""
     )
 
 install_my_pkgs(pkgs)
@@ -44,7 +44,7 @@ spppension_sites_to_scrape <-
 
 # 03 Scraping ####
 
-spppension magrittr::`%<>%`
+spppension %<>%
     scrape_multiple(spppension_sites_to_scrape, scrape_morningstar_dot_se)
 
 # 04 Saving and append for QC ####

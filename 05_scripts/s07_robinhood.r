@@ -11,7 +11,7 @@
 # 01 Ensure all pkgs in this scriptare installed ####
 pkgs <-
     c(
-        "magrittr"
+        ""
     )
 
 install_my_pkgs(pkgs)
@@ -47,7 +47,7 @@ robinhood_sites_to_scrape <- c(
 
 # 03 Scraping ####
 
-robinhood magrittr::`%<>%`
+robinhood %<>%
     scrape_multiple(robinhood_sites_to_scrape, scrape_morningstar_dot_com)
 
 # 04 Saving and append for QC ####

@@ -3,13 +3,24 @@
 # Date: 2020-Aug-01
 # Version: 1.0
 
-# Revisions:
-# Author:
-# Date: YYYY-MMM-DD
-# Revised Version:
+# Revisions: Getting project to install necessary packages if not done yet.
+# Author: David Gray Lassiter, PhD
+# Date: 2020-Aug-16
+# Revised Version: 1.1
 
+# 01 Ensure all pkgs in this scriptare installed ####
+pkgs <-
+    c(
+        "quantmod",
+        "xml2",
+        "rvest",
+        "openxlsx",
+        "magrittr"
+    )
 
-# 01 Exchange-rate data for fiats ####
+install_my_pkgs(pkgs)
+
+# 02 Exchange-rate data for fiats ####
 
 # Initializes df
 fiat_pairs <- data.frame(
@@ -26,26 +37,26 @@ fiat_pairs_to_search <- names(fiat_pairs)
 # Initiates loop to cycle for each pair
 for (i in seq_along(fiat_pairs_to_search)) {
     # Gets rate
-    quantmod::getQuote(paste0(fiat_pairs_to_search[i], "=X"))$Last %>%
+    quantmod::getQuote(paste0(fiat_pairs_to_search[i], "=X"))$Last magrittr::`%>%`
         # Stores it in a dataframe
         rbind.data.frame() ->
         # Saves it
         fiat_pairs[, paste(fiat_pairs_to_search[i])]
 }
 
-# 02 Exchange-rate data for Bitcoin to USD ####
+# 03 Exchange-rate data for Bitcoin to USD ####
 
 fiat_pairs[["BTCUSD"]] <-
     # Specify website
-    "https://www.coingecko.com/en/price_charts/bitcoin/usd" %>%
+    "https://www.coingecko.com/en/price_charts/bitcoin/usd" magrittr::`%>%`
     # Read it
-    xml2::read_html(.) %>%
+    xml2::read_html(.) magrittr::`%>%`
     # Extract required info
-    rvest::html_nodes(".text-3xl .no-wrap") %>%
+    rvest::html_nodes(".text-3xl .no-wrap") magrittr::`%>%`
     # String manipulations
-    rvest::html_text(.) %>%
-    gsub(",", "", .) %>%
-    gsub("[][$]", "", .) %>%
+    rvest::html_text(.) magrittr::`%>%`
+    gsub(",", "", .) magrittr::`%>%`
+    gsub("[][$]", "", .) magrittr::`%>%`
     # Convert to number
     as.numeric()
 

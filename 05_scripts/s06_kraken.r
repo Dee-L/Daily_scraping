@@ -3,13 +3,23 @@
 # Date: 2020-Aug-01
 # Version: 1.0
 
-# Revisions:
-# Author:
-# Date: YYYY-MMM-DD
-# Revised Version:
+# Revisions: Getting project to install necessary packages if not done yet.
+# Author: David Gray Lassiter, PhD
+# Date: 2020-Aug-16
+# Revised Version: 1.1
 
+# 01 Ensure all pkgs in this scriptare installed ####
+pkgs <-
+    c(
+        "openxlsx",
+        "magrittr",
+        "dplyr",
+        "jsonlite"
+    )
 
-# 01 Preparing to scrape ####
+install_my_pkgs(pkgs)
+
+# 02 Preparing to scrape ####
 
 kraken_ccs <- openxlsx::read.xlsx(cc_ticker_lookup_table, sheet = "kraken")
 
@@ -54,15 +64,15 @@ kraken <- # create df for my kraken
 
 kraken$id <- seq_len(nrow(kraken)) # creates sorting variable
 
-kraken %<>%
+kraken magrittr::`%<>%`
     # adds tags for cc2
-    merge(kraken_ccs, by.x = "SELLING_1_of", by.y = "four_letter_ticker") %>%
+    merge(kraken_ccs, by.x = "SELLING_1_of", by.y = "four_letter_ticker") magrittr::`%>%`
     # renames it
-    dplyr::rename(kraken_URL_tag_for_selling = kraken_URL_tag) %>%
+    dplyr::rename(kraken_URL_tag_for_selling = kraken_URL_tag) magrittr::`%>%`
     # adds tags for cc1
-    merge(kraken_ccs, by.x = "BUYS_x_of", by.y = "four_letter_ticker") %>%
+    merge(kraken_ccs, by.x = "BUYS_x_of", by.y = "four_letter_ticker") magrittr::`%>%`
     # renames it
-    dplyr::rename(kraken_URL_tag_for_buying = kraken_URL_tag) %>%
+    dplyr::rename(kraken_URL_tag_for_buying = kraken_URL_tag) magrittr::`%>%`
     # reorders columns
     .[, c(
         "id",
@@ -71,9 +81,9 @@ kraken %<>%
         "BID",
         "ASK",
         "kraken_URL_tag_for_selling",
-        "kraken_URL_tag_for_buying")] %>%
+        "kraken_URL_tag_for_buying")] magrittr::`%>%`
     # orders by id column
-    .[order(.$id), ] %>%
+    .[order(.$id), ] magrittr::`%>%`
     # drops id column
     .[, colnames(.) %not_in% "id"]
 
@@ -106,21 +116,21 @@ for (i in seq_len(nrow(kraken))) {
         cat(paste0("kraken ", i, " of ", nrow(kraken), " pairs.\n\n"))
         try_wait_retry({
             ithjson <- # read JSON file
-                kraken$URL[i] %>% # creates url to search
+                kraken$URL[i] magrittr::`%>%` # creates url to search
                 jsonlite::fromJSON(.) # parses the JSON
 
             kraken$BID[i] <- # extracts the BID price
-                ithjson$result %>%
-                .[[1]] %>%
-                .$b %>%
-                .[1] %>%
+                ithjson$result magrittr::`%>%`
+                .[[1]] magrittr::`%>%`
+                .$b magrittr::`%>%`
+                .[1] magrittr::`%>%`
                 as.numeric()
 
             kraken$ASK[i] <- # extracts the ASK price
-                ithjson$result %>%
-                .[[1]] %>%
-                .$a %>%
-                .[1] %>%
+                ithjson$result magrittr::`%>%`
+                .[[1]] magrittr::`%>%`
+                .$a magrittr::`%>%`
+                .[1] magrittr::`%>%`
                 as.numeric()
         })
     }

@@ -3,20 +3,27 @@
 # Date: 2020-Aug-01
 # Version: 1.0
 
-# Revisions: Comments and inelegant work-around for sourcing "reticulate"
+# Revisions: Getting project to install necessary packages if not done yet.
 # Author: David Gray Lassiter, PhD
-# Date: 2020-Aug-09
+# Date: 2020-Aug-16
 # Revised Version: 1.1
 
-# Ideas for revision: Report to reticulate package maintainers problem about
-# inability to source functions with "::" syntax and follow any fixes they
-# may provide.
+# Ideas for revision:
 
-# 01 Create df for looking up cc values ####
+# 01 Ensure all pkgs in this scriptare installed ####
+pkgs <-
+    c(
+        "openxlsx",
+        "reticulate",
+        "magrittr")
+
+install_my_pkgs(pkgs)
+
+# 02 Create df for looking up cc values ####
 cmc_ccs <-
     openxlsx::read.xlsx(cc_ticker_lookup_table, sheet = "CoinMarketCap")
 
-# 02 Scrape today's values via Python and cleanup the environment after. ####
+# 03 Scrape today's values via Python and cleanup the environment after. ####
 
 # This is currently throwing an error since there is something,
 # but it saves a csv in the 'outputs' file which can be used.
@@ -26,10 +33,6 @@ cmc_ccs <-
 # machine.
 
 # Source python to do the job
-# Although it is usually preferable to call library functions with the "::"
-# syntax, doing so with the "reticulate" package often leads to an error
-# that "there is no package named 'reticulate'".
-library("reticulate")
 reticulate::source_python("05_scripts/s03_cmc_scraper.py")
 
 # Retrieve the output from the python job
@@ -41,19 +44,19 @@ rm(r, ConnectionError, R, Request, Session, Timeout, TooManyRedirects)
 # Remove cache
 unlink(paste0(scripts_folder, "__pycache__"), recursive = TRUE)
 
-# 02 If scraping fails ####
+# 04 If scraping fails ####
 
 # If the python script doesn't work, use the former ranks for the ccs.
 
 tryCatch({
         ccs_ranked <<-
             # match the scraped data
-            cmc_data[["name"]] %>%
+            cmc_data[["name"]] magrittr::`%>%`
             match(
                 x = .,
-                cmc_ccs$CoinMarketCap_Name_For_Python_Matching) %>%
+                cmc_ccs$CoinMarketCap_Name_For_Python_Matching) magrittr::`%>%`
             # Extracts my tickers
-            cmc_ccs$CoinMarketCap_Ticker[.] %>%
+            cmc_ccs$CoinMarketCap_Ticker[.] magrittr::`%>%`
             # Converts to Tickers
             {
                 iterator <- length(.)
@@ -61,20 +64,20 @@ tryCatch({
                     MC_rank = seq_len(iterator),
                     CoinMarketCap_Ticker = .,
                     row.names = NULL)
-            } %>%
+            } magrittr::`%>%`
             # drop ccs I don't collect
-            .[!(is.na(.$CoinMarketCap_Ticker)), ] %>%
+            .[!(is.na(.$CoinMarketCap_Ticker)), ] magrittr::`%>%`
             # bring in four_letter_ticker
-            merge(., y = cmc_ccs) %>%
+            merge(., y = cmc_ccs) magrittr::`%>%`
             # sorts df
-            .[order(.$MC_rank), ] %>%
+            .[order(.$MC_rank), ] magrittr::`%>%`
             # add CC_priority_column
             {
                 iterator <- nrow(.)
                 data.frame(.,
                     CC_priority = seq_len(iterator),
                     row.names = NULL)
-            } %>%
+            } magrittr::`%>%`
             # keep only necessary columns
             .[, c(
                 "CC_priority",
@@ -94,7 +97,7 @@ openxlsx::addWorksheet(my_wb, "CCs_ranked")
 
 openxlsx::writeData(my_wb, "CCs_ranked", ccs_ranked)
 
-# 03 Subsetting CCs based on market cap and if already hold ####
+# 05 Subsetting CCs based on market cap and if already hold ####
 
 number_of_tickers <-
     openxlsx::read.xlsx(
@@ -147,7 +150,7 @@ ccs_under_cutoff <- # make list of ccs which have high enough market cap
     ccs_ranked$four_letter_ticker[
         ccs_ranked$MC_rank <
             market_cap_rank_cutoff
-    ] %>% as.character()
+    ] magrittr::`%>%` as.character()
 
 currencies_to_get_rates_for <-
-    c(currencies_held, ccs_under_cutoff) %>% unique()
+    c(currencies_held, ccs_under_cutoff) magrittr::`%>%` unique()

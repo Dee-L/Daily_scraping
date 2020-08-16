@@ -3,12 +3,20 @@
 # Date: 2020-Aug-01
 # Version: 1.0
 
-# Revisions:
-# Author:
-# Date: YYYY-MMM-DD
-# Revised Version:
+# Revisions: Getting project to install necessary packages if not done yet.
+# Author: David Gray Lassiter, PhD
+# Date: 2020-Aug-16
+# Revised Version: 1.1
 
-# 01 Preparing to scrape ####
+# 01 Ensure all pkgs in this scriptare installed ####
+pkgs <-
+    c(
+        "magrittr"
+    )
+
+install_my_pkgs(pkgs)
+
+# 02 Preparing to scrape ####
 
 spppension <-
     data.frame(
@@ -34,11 +42,11 @@ spppension_ids <-
 spppension_sites_to_scrape <-
     paste0(url_prefix, spppension_ids)
 
-# 02 Scraping ####
+# 03 Scraping ####
 
-spppension %<>%
+spppension magrittr::`%<>%`
     scrape_multiple(spppension_sites_to_scrape, scrape_morningstar_dot_se)
 
-# 03 Saving and append for QC ####
+# 04 Saving and append for QC ####
 
 save_and_append_to_test_df(spppension)

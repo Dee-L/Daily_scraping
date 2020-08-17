@@ -8,8 +8,7 @@
 # Date: 2020-Aug-16
 # Revised Version: 1.4
 
-# Suggested revisions: Revert to using %>% by sourcing magrittr instead of 
-# using :: syntax
+# Suggested revisions:
 
 # 01 Source all my functions ####
 source("04_my_fxns_this_project.r")

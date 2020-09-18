@@ -10,16 +10,18 @@
 
 # 01 Preparing to scrape ####
 
+fonds <- c(
+    "Handelsbanken Global Tema",
+    "Handelsbanken Kortränta SEK (A1 SEK)",
+    "Handelsbanken Långränta (A1 SEK)",
+    "Handelsbanken Svenska Småbolag A1",
+    "Handelsbanken Företagsobligation (A1 SEK)",
+    "Handelsbanken Pension 90 A13 SEK"
+)
+
 hpension <- data.frame(
-    fonds = c(
-        "Handelsbanken Global Tema",
-        "Handelsbanken Kortränta SEK (A1 SEK)",
-        "Handelsbanken Långränta (A1 SEK)",
-        "Handelsbanken Svenska Småbolag A1",
-        "Handelsbanken Företagsobligation (A1 SEK)",
-        "Handelsbanken Pension 90 A13 SEK"
-    ),
-    price = c(rep(NA, 6))
+    fonds,
+    price = c(rep(NA, length(fonds)))
 )
 
 url_prefix <- "https://www.morningstar.se/se/funds/snapshot/snapshot.aspx?id="

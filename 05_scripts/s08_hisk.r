@@ -10,13 +10,15 @@
 
 # 01 Preparing to scrape ####
 
+fonds <- c(
+    "Handelsbanken Hälsovård Tema SEK",
+    "Handelsbanken Hållbar Energi",
+    "Handelsbanken Euro Obligation"
+)
+
 hisk <- data.frame(
-    fonds = c(
-        "Handelsbanken Hälsovård Tema SEK",
-        "Handelsbanken Hållbar Energi",
-        "Handelsbanken Euro Obligation"
-    ),
-    price = c(rep(NA, 3))
+    fonds,
+    price = c(rep(NA, length(fonds)))
 )
 
 url_prefix <- "https://www.morningstar.se/se/funds/snapshot/snapshot.aspx?id="

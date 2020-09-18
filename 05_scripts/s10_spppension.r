@@ -10,15 +10,17 @@
 
 # 01 Preparing to scrape ####
 
+fonds <- c(
+    "SEB Likviditetsfond SEK",
+    "SPP Aktiefond USA",
+    "SPP Sverige Plus A",
+    "SPP Europa Plus A"
+)
+
 spppension <-
     data.frame(
-        fonds = c(
-            "SEB Likviditetsfond SEK",
-            "SPP Aktiefond USA",
-            "SPP Sverige Plus A",
-            "SPP Europa Plus A"
-        ),
-        price = c(rep(NA, 4))
+        fonds,
+        price = c(rep(NA, length(fonds)))
     )
 
 url_prefix <- "https://www.morningstar.se/se/funds/snapshot/snapshot.aspx?id="

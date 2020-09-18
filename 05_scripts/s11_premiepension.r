@@ -10,16 +10,18 @@
 
 # 01 Preparing to scrape ####
 
+fonds <- c(
+    "Skandia Time Global",
+    "Seligson & Co Global Top 25 Pharmaceuticals A",
+    "Lannebo Likviditetsfond",
+    "CB Save Earth Fund RC",
+    "Swedbank Robur Fastighet A"
+)
+
 premiepension <-
     data.frame(
-        fonds = c(
-            "Skandia Time Global",
-            "Seligson & Co Global Top 25 Pharmaceuticals A",
-            "Lannebo Likviditetsfond",
-            "CB Save Earth Fund RC",
-            "Swedbank Robur Fastighet A"
-        ),
-        price = c(rep(NA, 5))
+        fonds,
+        price = c(rep(NA, length(fonds)))
     )
 
 url_prefix <- "https://www.pensionsmyndigheten.se/service/fondtorg/fond/"

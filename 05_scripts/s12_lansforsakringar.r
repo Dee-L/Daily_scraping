@@ -10,15 +10,17 @@
 
 # 01 Preparing to scrape ####
 
+fonds <- c(
+    "BlackRock Sustainable Energy",
+    "Fidelity Global Technology",
+    "JPM Global Healthcare",
+    "SEB Green Bond Fund"
+)
+
 lansforsakringar <-
     data.frame(
-        fonds = c(
-            "BlackRock Sustainable Energy",
-            "Fidelity Global Technology",
-            "JPM Global Healthcare",
-            "SEB Green Bond Fund"
-        ),
-        price = c(rep(NA, 4))
+        fonds,
+        price = c(rep(NA, length(fonds)))
     )
 
 url_prefix <-

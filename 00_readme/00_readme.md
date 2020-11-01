@@ -36,7 +36,7 @@ The program is written predominantly in R. There are some python scripts as well
   - VS code workspace (not public).
 - `03_batch_program.r`
   - Running this program will run all other scripts, process the data, and output it to the target files.  
-- `04_my_fxns_this_project.r`
+- `04_myFxnsThisProject.r`
   - Define functions and parameters for this project (not public).  
 - `05_scripts/`
   - Contains the scripts run by `01_batch_program.r`.

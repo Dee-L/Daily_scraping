@@ -17,12 +17,12 @@ pkgs <-
         "openxlsx"
     )
 
-install_my_pkgs(pkgs)
+installMyPkgs(pkgs)
 
 # 02 Exchange-rate data for fiats ####
 
 # Initializes df
-fiat_pairs <- data.frame(
+fiatPairs <- data.frame(
     "USDSEK" = NA,
     "EURSEK" = NA,
     "EURUSD" = NA,
@@ -31,21 +31,21 @@ fiat_pairs <- data.frame(
     "USDCHF" = NA
 )
 
-fiat_pairs_to_search <- names(fiat_pairs)
+fiatPairsToSearch <- names(fiatPairs)
 
 # Initiates loop to cycle for each pair
-for (i in seq_along(fiat_pairs_to_search)) {
+for (i in seq_along(fiatPairsToSearch)) {
     # Gets rate
-    quantmod::getQuote(paste0(fiat_pairs_to_search[i], "=X"))$Last %>%
+    quantmod::getQuote(paste0(fiatPairsToSearch[i], "=X"))$Last %>%
         # Stores it in a dataframe
         rbind.data.frame() ->
         # Saves it
-        fiat_pairs[, paste(fiat_pairs_to_search[i])]
+        fiatPairs[, paste(fiatPairsToSearch[i])]
 }
 
 # 03 Exchange-rate data for Bitcoin to USD ####
 
-fiat_pairs[["BTCUSD"]] <-
+fiatPairs[["BTCUSD"]] <-
     # Specify website
     "https://www.coingecko.com/en/price_charts/bitcoin/usd" %>%
     # Read it
@@ -59,6 +59,6 @@ fiat_pairs[["BTCUSD"]] <-
     # Convert to number
     as.numeric()
 
-openxlsx::addWorksheet(my_wb, "fiat_pairs")
+openxlsx::addWorksheet(myWb, "fiatPairs")
 
-openxlsx::writeData(my_wb, "fiat_pairs", fiat_pairs)
+openxlsx::writeData(myWb, "fiatPairs", fiatPairs)

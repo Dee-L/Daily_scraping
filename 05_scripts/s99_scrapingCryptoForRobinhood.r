@@ -21,7 +21,7 @@ cryptos <- c(
     "BTC_"
 )
 
-rh_cryptos <- data.frame(
+rhCryptos <- data.frame(
     cryptos,
     price = c(rep(NA, length(cryptos)))
 )
@@ -29,23 +29,23 @@ rh_cryptos <- data.frame(
 # Populating prices based on kraken values - strange that averaging
 # only works if the column name has an integer as a suffix?
 
-rh_cryptos <- 
+rhCryptos <- 
     sqldf::sqldf("
             select
                 cryptos
                 , (BID + ASK) / 2 as price1
             from kraken
-                join rh_cryptos
-                    on cryptos = SELLING_1_of and BUYS_x_of = 'USD_'
+                join rhCryptos
+                    on cryptos = selling1Of and buysXOf = 'USD_'
     ")
 
 # Appending "Crypto" to names
 
-rh_cryptos[["cryptos"]] %<>% paste0(., " Crypto")
+rhCryptos[["cryptos"]] %<>% paste0(., " Crypto")
 
 # Renaming for rbind
 
-names(rh_cryptos) <- c("fonds", "price")
+names(rhCryptos) <- c("fonds", "price")
 
 robinhood %<>%
-    rbind(., rh_cryptos)
+    rbind(., rhCryptos)

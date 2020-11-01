@@ -11,54 +11,57 @@
 # Suggested revisions:
 
 # 01 Source all my functions ####
-source("04_my_fxns_this_project.r")
+source("04_myFxnsThisProject.r")
 
 # 02 Ensure all pkgs in this scripts are installed ####
 pkgs <-
     c(
         "openxlsx")
 
-install_my_pkgs(pkgs)
+installMyPkgs(pkgs)
 
 # 03 Backup former scraped data ####
-source_script_from_folder("s01_backup.r")
+sourceScriptFromFolder("s01_backup.r")
 
 # 04 Prioritize which cryptocurrencies to evaluate and trade ####
-source_script_from_folder("s02_cc_prioritizer.r")
+sourceScriptFromFolder("s02_ccPrioritizer.r")
 
 # 05 Getting exchange rate data for fiat pairs ####
-source_script_from_folder("s05_fiat_rates.r")
+sourceScriptFromFolder("s05_fiatRates.r")
 
 # 06 Scraping data from Kraken ####
-source_script_from_folder("s06_kraken.r")
+sourceScriptFromFolder("s06_kraken.r")
 
 # 07 Scraping data for Robinhood ####
-source_script_from_folder("s07_robinhood.r")
+# Stopped scraping these since stopped investing in Robinhood
+# sourceScriptFromFolder("s07_robinhood.r")
 
 # 08 Scraping data for Handelsbanken ISK ####
-source_script_from_folder("s08_hisk.r")
+sourceScriptFromFolder("s08_hisk.r")
 
 # 09 Scraping data for Handelsbanken Pension ####
-source_script_from_folder("s09_hpension.r")
+sourceScriptFromFolder("s09_hpension.r")
 
 # 10 Scraping data for SPP Pension ####
-source_script_from_folder("s10_spppension.r")
+sourceScriptFromFolder("s10_spppension.r")
 
 # 11 Scraping data for Premiepension ####
-source_script_from_folder("s11_premiepension.r")
+# Stopped scraping these since they stopped listing prices on their
+# site and I have not found a better alternative site yet.
+sourceScriptFromFolder("s11_premiepension.r")
 
 # 12 Scraping data for Länsförsäkringar ####
-source_script_from_folder("s12_lansforsakringar.r")
+sourceScriptFromFolder("s12_lansforsakringar.r")
 
 # 13 Final save ####
-openxlsx::saveWorkbook(my_wb, my_xlsx, overwrite = T)
+openxlsx::saveWorkbook(myWb, myXlsx, overwrite = T)
 
 # 14 Final QC test to see if all data scraped ####
-all_assets_df %<>% .[, c("Source", "fonds", "price")]
+allAssetsDf %<>% .[, c("Source", "fonds", "price")]
 
-if (all_assets_df[["price"]] %>% is.na %>% any) {
+if (allAssetsDf[["price"]] %>% is.na %>% any) {
     print("OBS! Not all data scraped! Observe:")
-    all_assets_df
+    allAssetsDf
 } else {
     print("All data apparently scraped. Nice job!")
 }

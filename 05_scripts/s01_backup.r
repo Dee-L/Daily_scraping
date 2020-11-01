@@ -11,21 +11,21 @@
 # 01 Initialize variables ####
 today <- Sys.Date()
 
-backups_to_keep <- 3
+backupsToKeep <- 3
 
-make_backup_file_name <- function(day) {
-    paste0(output_folder, "01_backup_", day, output_file_name)
+makeBackupFileName <- function(day) {
+    paste0(outputFolder, "01_backup_", day, outputFileName)
 }
 
-todays_file <- make_backup_file_name(today)
+todaysFile <- makeBackupFileName(today)
 
-file_to_remove <- make_backup_file_name(today - backups_to_keep)
+fileToRemove <- makeBackupFileName(today - backupsToKeep)
 
 # 02 Make backup and delete aged-out backup ####
 file.copy(
-    from = my_xlsx,
-    to = todays_file,
+    from = myXlsx,
+    to = todaysFile,
     overwrite = T
 )
 
-file.remove(file_to_remove)
+file.remove(fileToRemove)

@@ -34,7 +34,7 @@ pkgs <-
         "sqldf"
     )
 
-install_my_pkgs(pkgs)
+installMyPkgs(pkgs)
 
 # 02 Preparing to scrape ####
 
@@ -55,7 +55,7 @@ robinhood <- data.frame(
     price = c(rep(NA, length(fonds)))
 )
 
-robinhood_sites_to_scrape <- c(
+robinhoodSitesToScrape <- c(
     "https://www.morningstar.com/etfs/xnas/vnqi/quote"
     , "https://www.morningstar.com/etfs/arcx/ixj/quote"
     , "https://www.morningstar.com/etfs/arcx/vnq/quote"
@@ -70,8 +70,8 @@ robinhood_sites_to_scrape <- c(
 # 03 Scraping ####
 
 robinhood %<>%
-    scrape_multiple(robinhood_sites_to_scrape, scrape_morningstar_dot_com)
+    scrapeMultiple(robinhoodSitesToScrape, scrapeMorningstarDotCom)
 
 # 04 Saving and append for QC ####
 
-save_and_append_to_test_df(robinhood)
+saveAndAppendToTestDf(robinhood)

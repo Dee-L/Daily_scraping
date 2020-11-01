@@ -24,9 +24,9 @@ hpension <- data.frame(
     price = c(rep(NA, length(fonds)))
 )
 
-url_prefix <- "https://www.morningstar.se/se/funds/snapshot/snapshot.aspx?id="
+urlPrefix <- "https://www.morningstar.se/se/funds/snapshot/snapshot.aspx?id="
 
-hpension_ids <-
+hpensionIds <-
     c(
         "F0GBR04F6J",
         "F0GBR04F6C",
@@ -36,14 +36,14 @@ hpension_ids <-
         "F000011DNL"
     )
 
-hpension_sites_to_scrape <-
-    paste0(url_prefix, hpension_ids)
+hpensionSitesToScrape <-
+    paste0(urlPrefix, hpensionIds)
 
 # 02 Scraping ####
 
 hpension %<>%
-    scrape_multiple(hpension_sites_to_scrape, scrape_morningstar_dot_se)
+    scrapeMultiple(hpensionSitesToScrape, scrapeMorningstarDotSe)
 
 # 03 Saving and append for QC ####
 
-save_and_append_to_test_df(hpension)
+saveAndAppendToTestDf(hpension)

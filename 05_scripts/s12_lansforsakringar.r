@@ -23,12 +23,12 @@ lansforsakringar <-
         price = c(rep(NA, length(fonds)))
     )
 
-url_prefix <-
+urlPrefix <-
     paste0(
         "https://www.lansforsakringar.se/stockholm/privat/bank/spara/",
         "fondkurser/jamfor-fonder/?term=jpm%20global&universeId=ALL_5085&ids=")
 
-lansforsakringar_ids <-
+lansforsakringarIds <-
     c(
         "F0GBR04KF3",
         "F00000T2AE",
@@ -36,14 +36,14 @@ lansforsakringar_ids <-
         "F00000VFU9"
     )
 
-lansforsakringar_sites <-
-    paste0(url_prefix, lansforsakringar_ids)
+lansforsakringarSites <-
+    paste0(urlPrefix, lansforsakringarIds)
 
 # 02 Scraping ####
 
 lansforsakringar %<>%
-    scrape_multiple(lansforsakringar_sites, scrape_lansforsakringar_dot_se)
+    scrapeMultiple(lansforsakringarSites, scrapeLansforsakringarDotSe)
 
 # 03 Saving and append for QC ####
 
-save_and_append_to_test_df(lansforsakringar)
+saveAndAppendToTestDf(lansforsakringar)

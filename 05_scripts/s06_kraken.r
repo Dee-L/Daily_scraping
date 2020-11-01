@@ -16,45 +16,45 @@ pkgs <-
         "jsonlite"
     )
 
-install_my_pkgs(pkgs)
+installMyPkgs(pkgs)
 
 # 02 Preparing to scrape ####
 
-kraken_ccs <- openxlsx::read.xlsx(cc_ticker_lookup_table, sheet = "kraken")
+krakenCcs <- openxlsx::read.xlsx(ccTickerLookupTable, sheet = "kraken")
 
-kraken_n_pairs <-
+krakenNPairs <-
     openxlsx::read.xlsx(
-        xlsxFile = my_budget_xlsm,
+        xlsxFile = myBudgetXlsm,
         sheet = "kraken",
         rows = 5:6,
         cols = 2
     )[1, 1]
 
-start_row_for_kraken <-
+startRowForKraken <-
     openxlsx::read.xlsx(
-        xlsxFile = my_budget_xlsm,
+        xlsxFile = myBudgetXlsm,
         sheet = "kraken",
         rows = 5:6,
         cols = 3
     )[1, 1]
 
-end_row_for_kraken <-
-    start_row_for_kraken + kraken_n_pairs
+endRowForKraken <-
+    startRowForKraken + krakenNPairs
 
 kraken <- # create df for my kraken
     data.frame(
-        SELLING_1_of =
+        selling1Of =
             openxlsx::read.xlsx(
-                xlsxFile = my_budget_xlsm,
+                xlsxFile = myBudgetXlsm,
                 sheet = "kraken",
-                rows = start_row_for_kraken:end_row_for_kraken,
+                rows = startRowForKraken : endRowForKraken,
                 cols = 2
             ),
-        BUYS_x_of =
+        buysXOf =
             openxlsx::read.xlsx(
-                xlsxFile = my_budget_xlsm,
+                xlsxFile = myBudgetXlsm,
                 sheet = "kraken",
-                rows = start_row_for_kraken:end_row_for_kraken,
+                rows = startRowForKraken : endRowForKraken,
                 cols = 3
             ),
         BID = NA,
@@ -65,47 +65,47 @@ kraken$id <- seq_len(nrow(kraken)) # creates sorting variable
 
 kraken %<>%
     # adds tags for cc2
-    merge(kraken_ccs, by.x = "SELLING_1_of", by.y = "four_letter_ticker") %>%
+    merge(krakenCcs, by.x = "selling1Of", by.y = "fourLetterTicker") %>%
     # renames it
-    dplyr::rename(kraken_URL_tag_for_selling = kraken_URL_tag) %>%
+    dplyr::rename(krakenUrlTagForSelling = krakenUrlTag) %>%
     # adds tags for cc1
-    merge(kraken_ccs, by.x = "BUYS_x_of", by.y = "four_letter_ticker") %>%
+    merge(krakenCcs, by.x = "buysXOf", by.y = "fourLetterTicker") %>%
     # renames it
-    dplyr::rename(kraken_URL_tag_for_buying = kraken_URL_tag) %>%
+    dplyr::rename(krakenUrlTagForBuying = krakenUrlTag) %>%
     # reorders columns
     .[, c(
         "id",
-        "SELLING_1_of",
-        "BUYS_x_of",
+        "selling1Of",
+        "buysXOf",
         "BID",
         "ASK",
-        "kraken_URL_tag_for_selling",
-        "kraken_URL_tag_for_buying")] %>%
+        "krakenUrlTagForSelling",
+        "krakenUrlTagForBuying")] %>%
     # orders by id column
     .[order(.$id), ] %>%
     # drops id column
-    .[, colnames(.) %not_in% "id"]
+    .[, colnames(.) %notIn% "id"]
 
 # The currency you want to sell goes into the address first
 kraken[["URL"]] <-
     paste0(
         "https://api.kraken.com/0/public/Ticker?pair=",
-        kraken$kraken_URL_tag_for_selling,
-        kraken$kraken_URL_tag_for_buying)
+        kraken$krakenUrlTagForSelling,
+        kraken$krakenUrlTagForBuying)
 
-kraken_discontinued_tickers <-
-    kraken_ccs$four_letter_ticker[kraken_ccs$kraken_discontinued == TRUE]
+krakenDiscontinuedTickers <-
+    krakenCcs$fourLetterTicker[krakenCcs$krakenDiscontinued == TRUE]
 
 for (i in seq_len(nrow(kraken))) {
 
-    if ((kraken$SELLING_1_of[i] %in%
-        currencies_to_get_rates_for &
-        kraken$SELLING_1_of[i] %not_in%
-            kraken_discontinued_tickers &
-        kraken$BUYS_x_of[i] %in%
-            currencies_to_get_rates_for &
-        kraken$BUYS_x_of[i] %not_in%
-            kraken_discontinued_tickers
+    if ((kraken$selling1Of[i] %in%
+        currenciesToGetRatesFor &
+        kraken$selling1Of[i] %notIn%
+            krakenDiscontinuedTickers &
+        kraken$buysXOf[i] %in%
+            currenciesToGetRatesFor &
+        kraken$buysXOf[i] %notIn%
+            krakenDiscontinuedTickers
     ) == FALSE) {
         # doesn't look up data if currencies are of little consequence for me
         kraken$BID[i] <- NA
@@ -113,7 +113,7 @@ for (i in seq_len(nrow(kraken))) {
     }
     else {
         cat(paste0("kraken ", i, " of ", nrow(kraken), " pairs.\n\n"))
-        try_wait_retry({
+        tryWaitRetry({
             ithjson <- # read JSON file
                 kraken$URL[i] %>% # creates url to search
                 jsonlite::fromJSON(.) # parses the JSON
@@ -135,19 +135,19 @@ for (i in seq_len(nrow(kraken))) {
     }
 } # closes loop
 
-openxlsx::addWorksheet(my_wb, "kraken")
+openxlsx::addWorksheet(myWb, "kraken")
 
-openxlsx::writeData(my_wb, "kraken", kraken)
+openxlsx::writeData(myWb, "kraken", kraken)
 
 # 02 Setting up intra-exchange arbitrage paths ####
 
-kraken_arb_paths <-
-    intra_exc_arb_paths_2_interm(
-        list_of_currencies_in_exchange = kraken_ccs$four_letter_ticker,
-        currencies_on_selling_side = kraken$SELLING_1_of,
-        currencies_on_buying_side = kraken$BUYS_x_of
+krakenArbPaths <-
+    intraExcArbPaths2Interm(
+        listOfCurrenciesInExchange = krakenCcs$fourLetterTicker,
+        currenciesOnSellingSide = kraken$selling1Of,
+        currenciesOnBuyingSide = kraken$buysXOf
     )
 
-openxlsx::addWorksheet(my_wb, "kraken_arb_paths")
+openxlsx::addWorksheet(myWb, "krakenArbPaths")
 
-openxlsx::writeData(my_wb, "kraken_arb_paths", kraken_arb_paths)
+openxlsx::writeData(myWb, "krakenArbPaths", krakenArbPaths)

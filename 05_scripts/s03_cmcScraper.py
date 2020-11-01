@@ -11,16 +11,16 @@
 # Getting the path for the project and doing string manipulation.
 import os
 import re
-working_dir = re.sub("\\\\", "/", os.getcwd())
+workingDir = re.sub("\\\\", "/", os.getcwd())
 
 # Specifying the scripts and output paths
-scripts_dir = working_dir + "/05_scripts"
-outputs_dir = working_dir + "/07_outputs"
+scriptsDir = workingDir + "/05_scripts"
+outputsDir = workingDir + "/07_outputs"
 
 # Importing credentials
 import site
-site.addsitedir(scripts_dir)
-from s04_cmc_credentials import *
+site.addsitedir(scriptsDir)
+from s04_cmcCredentials import *
 
 # Preparing to scrape via the CMC API
 url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
@@ -32,7 +32,7 @@ parameters = {
 
 headers = {
     'Accepts': 'application/json',
-    my_key: my_value,
+    myKey: myValue,
 }
 
 # Scraping via the CMC API
@@ -47,12 +47,12 @@ session.close()
 
 # Formatting the data and saving it
 import json
-CMC_data = json.loads(response.text)
-CMC_data = CMC_data['data']
+cmcData = json.loads(response.text)
+cmcData = cmcData['data']
 
 import pandas as pd
-CMC_data = pd.json_normalize(CMC_data)
-CMC_data.to_csv(outputs_dir + "/02_CMC_data.csv")
+cmcData = pd.json_normalize(cmcData)
+cmcData.to_csv(outputsDir + "/02_cmcData.csv")
 
 # Clean up unneeded objects
 del(url, parameters, headers, session, response)

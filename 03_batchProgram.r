@@ -18,25 +18,31 @@ pkgs <-
     c(
         "openxlsx")
 
-installMyPkgs(pkgs)
+activatePkgs(pkgs)
 
 # 03 Backup former scraped data ####
 sourceScriptFromFolder("s01_backup.r")
 
 # 04 Prioritize which cryptocurrencies to evaluate and trade ####
-sourceScriptFromFolder("s02_ccPrioritizer.r")
+# Stopped holding investments in cryptos so I stopped scraping
+# Coinmarketcap. Also, the use of the reticulate package seems
+# to be failing.
+# sourceScriptFromFolder("s02_ccPrioritizer.r")
 
 # 05 Getting exchange rate data for fiat pairs ####
 sourceScriptFromFolder("s05_fiatRates.r")
 
 # 06 Scraping data from Kraken ####
-sourceScriptFromFolder("s06_kraken.r")
+# Stopped holding investments in cryptos so I stopped scraping
+# Kraken.
+# sourceScriptFromFolder("s06_kraken.r")
 
 # 07 Scraping data for Robinhood ####
 # Stopped scraping these since stopped investing in Robinhood
 # sourceScriptFromFolder("s07_robinhood.r")
 
 # 08 Scraping data for Handelsbanken ISK ####
+# Possible encoding problem here, as Swedish letters seem to get modified.
 sourceScriptFromFolder("s08_hisk.r")
 
 # 09 Scraping data for Handelsbanken Pension ####
@@ -46,17 +52,18 @@ sourceScriptFromFolder("s09_hpension.r")
 sourceScriptFromFolder("s10_spppension.r")
 
 # 11 Scraping data for Premiepension ####
-# Stopped scraping these since they stopped listing prices on their
-# site and I have not found a better alternative site yet.
 sourceScriptFromFolder("s11_premiepension.r")
 
 # 12 Scraping data for Länsförsäkringar ####
 sourceScriptFromFolder("s12_lansforsakringar.r")
 
-# 13 Final save ####
+# 13 Scraping kr/kvm from mäklarstatistik ####
+sourceScriptFromFolder("s13_maklarstatistik.r")
+
+# 14 Final save ####
 openxlsx::saveWorkbook(myWb, myXlsx, overwrite = T)
 
-# 14 Final QC test to see if all data scraped ####
+# 15 Final QC test to see if all data scraped ####
 allAssetsDf %<>% .[, c("Source", "fonds", "price")]
 
 if (allAssetsDf[["price"]] %>% is.na %>% any) {
@@ -66,5 +73,5 @@ if (allAssetsDf[["price"]] %>% is.na %>% any) {
     print("All data apparently scraped. Nice job!")
 }
 
-# 15 Put machine to sleep ####
-shell(cmd = "rundll32.exe powrprof.dll,SetSuspendState 0,1,0")
+# 16 Put machine to sleep ####
+# shell(cmd = "rundll32.exe powrprof.dll,SetSuspendState 0,1,0")

@@ -8,24 +8,16 @@
 # Date: 2020-Aug-16
 # Revised Version: 1.1
 
+# 01 Ensure all pkgs in this script are installed ####
+install.packages("here")
+library("here")
+
+# 02 Initialize wd and source functions not unique to this project ####
+setwd(here())
+source("../01_myFxnsMltplProjects.r")
+
 
 # 01 Ensure all pkgs in this script are installed ####
-
-# Note, this fxn is also in `../01_myFxnsMltplProjects.r`, but is created
-# and called already here in order to ensure that sourcing the `here` function
-# works when referring to `../01_myFxnsMltplProjects.r`
-
-installMyPkgs <- function(pkgs) {
-
-    for (pkg in seq_along(pkgs)) {
-        if(pkgs[pkg] %in% installed.packages()) {
-            break
-        } else {
-            install.packages(pkg)
-        }
-    }
-}
-
 pkgs <-
     c(
         "here",
@@ -36,11 +28,7 @@ pkgs <-
         "gtools",
         "dplyr")
 
-installMyPkgs(pkgs)
-
-# 02 Initialize wd and source functions not unique to this project ####
-setwd(here::here())
-source("../01_myFxnsMltplProjects.r")
+activatePkgs(pkgs)
 
 # 03 Define paths ####
 scriptsFolder <- paste0(getwd(), "/05_scripts/")
@@ -161,6 +149,16 @@ scrapeLansforsakringarDotSe <- function(url) {
     price
 }
 
+scrapeMaklarstatistik <- function(url) {
+    url %>%
+        xml2::read_html(.) %>%
+        rvest::html_nodes(".area-stat__value") %>%
+        rvest::html_text(.) %>%
+        .[[1]] %>%
+        gsub(" ", "", .) %>%
+        as.numeric()
+}
+
 scrapeMultiple <- function(df, sitesToScrape, scraperFunction) {
     for (i in seq_along(sitesToScrape)) {
         tries <- 1
@@ -188,7 +186,7 @@ scrapeMultiple <- function(df, sitesToScrape, scraperFunction) {
         rm(tries)
     }
 
-    if (!exists("rd", envir = .GlobalEnv)) {
+    if (exists("rd", envir = .GlobalEnv)) {
         stopRd()
     }
 

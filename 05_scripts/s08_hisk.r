@@ -11,9 +11,12 @@
 # 01 Preparing to scrape ####
 
 fonds <- c(
-    "Handelsbanken Hälsovård Tema SEK",
+    "Handelsbanken Euro Obligation-SEK",
+    "Handelsbanken Hälsovård Tema",
     "Handelsbanken Hållbar Energi",
-    "Handelsbanken Euro Obligation"
+    "Handelsbanken Norden Tema",
+    "Handelsbanken Nordiska Småb A1 SEK"
+    
 )
 
 hisk <- data.frame(
@@ -25,9 +28,11 @@ urlPrefix <- "https://www.morningstar.se/se/funds/snapshot/snapshot.aspx?id="
 
 hiskIds <-
     c(
+        "F00000UF2C",
         "F0GBR04F38",
         "F00000UI2B",
-        "F00000UF2C"
+        "F0GBR04F64",
+        "F0GBR04F65"
     )
 
 hiskSitesToScrape <-

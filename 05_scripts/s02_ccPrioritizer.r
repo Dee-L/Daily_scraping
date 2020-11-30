@@ -16,7 +16,7 @@ pkgs <-
         "openxlsx",
         "reticulate")
 
-installMyPkgs(pkgs)
+activatePkgs(pkgs)
 
 # 02 Create df for looking up cc values ####
 cmcCCs <-

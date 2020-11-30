@@ -34,7 +34,7 @@ pkgs <-
         "sqldf"
     )
 
-installMyPkgs(pkgs)
+activatePkgs(pkgs)
 
 # 02 Preparing to scrape ####
 

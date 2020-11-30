@@ -17,7 +17,7 @@ pkgs <-
         "openxlsx"
     )
 
-installMyPkgs(pkgs)
+activatePkgs(pkgs)
 
 # 02 Exchange-rate data for fiats ####
 

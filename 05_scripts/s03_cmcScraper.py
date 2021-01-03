@@ -1,12 +1,7 @@
 # Purpose: Scrape Coin Market Cap data
 # Author: David Gray Lassiter, PhD
-# Date: 2020-Jul-31
-# Version: 1.0
 
-# Revisions:
-# Author:
-# Date: YYYY-MMM-DD
-# Revised Version:
+# API documentation: https://coinmarketcap.com/api/documentation/v1/#section/Quick-Start-Guide
 
 # Getting the path for the project and doing string manipulation.
 import os

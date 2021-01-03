@@ -1,20 +1,15 @@
 # Purpose: Prioritize which cryptocurrencies to evaluate and trade
 # Author: David Gray Lassiter, PhD
-# Date: 2020-Aug-01
-# Version: 1.0
 
-# Revisions: Getting project to install necessary packages if not done yet.
-# Author: David Gray Lassiter, PhD
-# Date: 2020-Aug-16
-# Revised Version: 1.1
-
-# Ideas for revision:
+# Sys.setenv(RETICULATE_PYTHON = "C:/Users/D/anaconda3/envs/r-reticulate/")
 
 # 01 Ensure all pkgs in this scriptare installed ####
 pkgs <-
     c(
         "openxlsx",
-        "reticulate")
+        # "coinmarketcapr",
+        "reticulate"
+        )
 
 activatePkgs(pkgs)
 
@@ -22,41 +17,40 @@ activatePkgs(pkgs)
 cmcCCs <-
     openxlsx::read.xlsx(ccTickerLookupTable, sheet = "CoinMarketCap")
 
-# 03 Scrape today's values via Python and cleanup the environment after. ####
+# 03 Scrape today's values via R ####
+# This works for top 100 only - I posed a question to the repo owner ####
+# coinmarketcapr::setup(myApiKey)
+# cmcData <- get_crypto_listings()
 
-# This is currently throwing an error since there is something,
-# but it saves a csv in the 'outputs' file which can be used.
-# If "ModuleNotFound" errors thrown, can use py_install('<name of module>').
-# I believe this installs the modules in the miniconda/R installation.
-# This may mean that you have python installed in two different places on your
-# machine.
+# 04 Scrape today's values via Python. ####
 
-# Source python to do the job
+# 05 Specify which installation of python to use - otherwise script pauses ####
+reticulate::use_python("C:/Users/D/anaconda3/python.exe")
+
+# 06 Will get error on first use of reticulate function, so wrap in `try` ####
+try(reticulate::source_python("05_scripts/s03_cmcScraper.py"))
 reticulate::source_python("05_scripts/s03_cmcScraper.py")
 
-# Retrieve the output from the python job
+# 04 Retrieve the output from the python job ####
 cmcData <- read.csv("07_outputs/02_cmcData.csv")
 
-# Cleanup memory
-rm(r, ConnectionError, R, Request, Session, Timeout, TooManyRedirects)
+# 05 Cleanup memory ####
+rm(r, ConnectionError, Request, Session, Timeout, TooManyRedirects)
 
-# Remove cache
+# 06 Remove cache ####
 unlink(paste0(scriptsFolder, "__pycache__"), recursive = TRUE)
 
-# 04 If scraping fails ####
-
-# If the python script doesn't work, use the former ranks for the ccs.
-
+# 07 If scraping fails, use the former ranks for the ccs. ####
 tryCatch({
         ccsRanked <<-
-            # match the scraped data
+            # 08 match the scraped data ####
             cmcData[["name"]] %>%
             match(
                 x = .,
                 cmcCCs$coinmarketcapNameForPythonMatching) %>%
-            # Extracts my tickers
+            # 09 Extracts my tickers ####
             cmcCCs$coinmarketcapTicker[.] %>%
-            # Converts to Tickers
+            # 10 Converts to Tickers ####
             {
                 iterator <- length(.)
                 data.frame(
@@ -64,20 +58,20 @@ tryCatch({
                     coinmarketcapTicker = .,
                     row.names = NULL)
             } %>%
-            # drop ccs I don't collect
+            # 11 drop ccs I don't collect ####
             .[!(is.na(.$coinmarketcapTicker)), ] %>%
-            # bring in fourLetterTicker
+            # 12 bring in fourLetterTicker ####
             merge(., y = cmcCCs) %>%
-            # sorts df
+            # 13 sorts df ####
             .[order(.$mcRank), ] %>%
-            # add ccPriorityColumn
+            # 14 add ccPriorityColumn ####
             {
                 iterator <- nrow(.)
                 data.frame(.,
                     ccPriority = seq_len(iterator),
                     row.names = NULL)
             } %>%
-            # keep only necessary columns
+            # 15 keep only necessary columns ####
             .[, c(
                 "ccPriority",
                 "mcRank",
@@ -93,11 +87,9 @@ tryCatch({
 )
 
 openxlsx::addWorksheet(myWb, "ccsRanked")
-
 openxlsx::writeData(myWb, "ccsRanked", ccsRanked)
 
-# 05 Subsetting CCs based on market cap and if already hold ####
-
+# 16 Subsetting CCs based on market cap and if already hold ####
 numberOfTickers <-
     openxlsx::read.xlsx(
         xlsxFile = myBudgetXlsm,
@@ -117,7 +109,8 @@ startRowForCcSummary <-
 endRowForCcSummary <-
     startRowForCcSummary + numberOfTickers
 
-valuesOfCcsHeld <- # extract data about which currencies I have and values
+# 17 extract data about which currencies I have and values ####
+valuesOfCcsHeld <- 
     cbind(
         openxlsx::read.xlsx(
             xlsxFile = myBudgetXlsm,
@@ -133,11 +126,13 @@ valuesOfCcsHeld <- # extract data about which currencies I have and values
         )
     )
 
-currenciesHeld <- # subset currencies to only include those I hold
+# 18 Subset currencies to only include those I hold ####
+currenciesHeld <- 
     valuesOfCcsHeld$fourLetterTicker[
         valuesOfCcsHeld$totalValueInEUR > 0]
 
-marketCapRankCutoff <- # pull market cap cutoff from file
+# 19 pull market cap cutoff from file ####
+marketCapRankCutoff <-
     openxlsx::read.xlsx(
         xlsxFile = myBudgetXlsm,
         sheet = "ccSummarySheet",
@@ -145,7 +140,8 @@ marketCapRankCutoff <- # pull market cap cutoff from file
         cols = 4
     )[1, 1]
 
-ccsUnderCutoff <- # make list of ccs which have high enough market cap
+# 20 make list of ccs which have high enough market cap ####
+ccsUnderCutoff <- 
     ccsRanked$fourLetterTicker[
         ccsRanked$mcRank <
             marketCapRankCutoff

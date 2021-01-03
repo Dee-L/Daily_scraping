@@ -27,7 +27,7 @@ sourceScriptFromFolder("s01_backup.r")
 # Stopped holding investments in cryptos so I stopped scraping
 # Coinmarketcap. Also, the use of the reticulate package seems
 # to be failing.
-# sourceScriptFromFolder("s02_ccPrioritizer.r")
+sourceScriptFromFolder("s02_ccPrioritizer.r")
 
 # 05 Getting exchange rate data for fiat pairs ####
 sourceScriptFromFolder("s05_fiatRates.r")
@@ -35,7 +35,7 @@ sourceScriptFromFolder("s05_fiatRates.r")
 # 06 Scraping data from Kraken ####
 # Stopped holding investments in cryptos so I stopped scraping
 # Kraken.
-# sourceScriptFromFolder("s06_kraken.r")
+sourceScriptFromFolder("s06_kraken.r")
 
 # 07 Scraping data for Robinhood ####
 # Stopped scraping these since stopped investing in Robinhood

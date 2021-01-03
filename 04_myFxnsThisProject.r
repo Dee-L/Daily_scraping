@@ -1,12 +1,6 @@
 # Purpose: Define functions and parameters for this project
 # Author: David Gray Lassiter, PhD
-# Date: 2020-Jul-31
-# Version: 1.0
 
-# Revisions: Install package "here" if not already installed
-# Author: David Gray Lassiter, PhD
-# Date: 2020-Aug-16
-# Revised Version: 1.1
 
 # 01 Ensure all pkgs in this script are installed ####
 install.packages("here")
@@ -37,7 +31,7 @@ outputFolder <- paste0(getwd(), "/07_outputs/")
 
 # 04 Source inputs ####
 myBudgetXlsm <-
-    paste0(inputFolder, "i01_budgetTracker2020.xlsm")
+    paste0(inputFolder, "i01_budgetTracker2021.xlsm")
 
 ccTickerLookupTable <-
     paste0(inputFolder, "i02_dailyCcTickerLookupTable.xlsx")
